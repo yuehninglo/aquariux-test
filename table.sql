@@ -43,6 +43,22 @@ CREATE TABLE transactions (
     FOREIGN KEY (trading_pair_id) REFERENCES trading_pairs(id)
 );
 
+CREATE TABLE price_sources (
+    id IDENTITY PRIMARY KEY,
+    name VARCHAR(50) NOT NULL UNIQUE,
+    url VARCHAR(255)
+);
+
+CREATE TABLE price_snapshots (
+    id IDENTITY PRIMARY KEY,
+    trading_pair_id BIGINT NOT NULL,
+    source_id BIGINT,
+    price DECIMAL(36, 18) NOT NULL,
+    captured_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (trading_pair_id) REFERENCES trading_pairs(id),
+    FOREIGN KEY (source_id) REFERENCES price_sources(id)
+);
+
 INSERT INTO users (username, email) VALUES
 ('Eden', 'eden@aquariux.com'),
 ('Tom', 'tom@aquariux.com');
@@ -68,4 +84,7 @@ INSERT INTO trading_pairs (base_currency_id, quote_currency_id, symbol) VALUES
 (1, 3, 'BTC/USDT'),
 (2, 3, 'ETH/USDT');
 
+INSERT INTO price_sources (name, url) VALUES
+('Binance', 'https://api.binance.com/api/v3/ticker/bookTicker'),
+('Houbi', 'https://api.huobi.pro/market/tickers');
 
