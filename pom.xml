@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.aquariux</groupId>
-	<artifactId>test</artifactId>
+	<artifactId>interview-test</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>test</name>
 	<description>Test from aquariux</description>
