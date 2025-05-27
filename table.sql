@@ -52,8 +52,8 @@ CREATE TABLE price_sources (
 CREATE TABLE price_snapshots (
     id IDENTITY PRIMARY KEY,
     trading_pair_id BIGINT NOT NULL,
-    source_id BIGINT,
-    price DECIMAL(36, 18) NOT NULL,
+    bid_price DECIMAL(36, 18) NOT NULL,
+    ask_price DECIMAL(36, 18) NOT NULL,
     captured_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (trading_pair_id) REFERENCES trading_pairs(id),
     FOREIGN KEY (source_id) REFERENCES price_sources(id)

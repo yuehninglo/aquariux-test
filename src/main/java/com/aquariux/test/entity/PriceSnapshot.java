@@ -21,11 +21,11 @@ public class PriceSnapshot {
     @Column(name = "trading_pair_id", nullable = false)
     private Long tradingPairId;
 
-    @Column(name = "source_id")
-    private Long sourceId;
+    @Column(name = "bid_price", nullable = false, precision = 36, scale = 18)
+    private BigDecimal bidPrice;
 
-    @Column(nullable = false, precision = 36, scale = 18)
-    private BigDecimal price;
+    @Column(name = "ask_price", nullable = false, precision = 36, scale = 18)
+    private BigDecimal askPrice;
 
     @Column(name = "captured_at")
     @CreationTimestamp
