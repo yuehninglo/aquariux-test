@@ -81,8 +81,8 @@ INSERT INTO wallets (user_id, crypto_id, balance) VALUES
 (2, 3, 50000.0);  -- Tom has 50,000 USDT
 
 INSERT INTO trading_pairs (base_currency_id, quote_currency_id, symbol) VALUES
-(1, 3, 'BTC/USDT'),
-(2, 3, 'ETH/USDT');
+(1, 3, 'BTCUSDT'),
+(2, 3, 'ETHUSDT');
 
 INSERT INTO price_sources (name, url) VALUES
 ('Binance', 'https://api.binance.com/api/v3/ticker/bookTicker'),
