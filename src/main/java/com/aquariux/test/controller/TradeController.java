@@ -23,7 +23,7 @@ public class TradeController {
     @PostMapping("execute/{username}")
     public ResponseEntity<TradeResponse> executeTrade(@PathVariable String username,
                                                       @RequestBody TradeRequest request) {
-        log.info("Received trade request: {}", request);
+        log.info("Received trade request from user: {}, request: {}", username, request);
         try {
             TradeResponse response = tradingService.executeTrade(username, request);
             log.info("Trade executed successfully: {}", response);

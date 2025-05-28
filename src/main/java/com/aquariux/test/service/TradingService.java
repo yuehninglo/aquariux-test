@@ -41,15 +41,17 @@ public class TradingService {
     }
 
     @Transactional
-    public TradeResponse executeTrade(String userName, TradeRequest request) throws Exception {
-        User user = userRepository.findByUserName(userName);
+    public TradeResponse executeTrade(String username, TradeRequest request) throws Exception {
+        User user = userRepository.findByUsername(username);
+        log.debug("user info: {}", user);
+        String cryptoSymbol = request.getCryptoSymbol();
         TradingPair pair =
                 tradingPairRepository.findBySymbolIgnoreCase(request.getTradingSymbol()).get();
         Transaction.Side side = Transaction.Side.valueOf(request.getSide());
         PriceSnapshot snap = priceSnapshotRepository.findByTradingPairId(pair.getId()).get();
         BigDecimal exePrice = side == Transaction.Side.BUY? snap.getAskPrice(): snap.getBidPrice();
 
-        if (hasEnoughBalance(user, exePrice, request.getAmount())) {
+        if (hasEnoughBalance(user, exePrice, request.getAmount(), side, cryptoSymbol)) {
 
             Transaction transaction = new Transaction();
             transaction.setUser(user);
@@ -62,7 +64,7 @@ public class TradingService {
             transaction.setTotal(total);
 
             Transaction savedTransaction = transactionRepository.save(transaction);
-            calcNewBalance(user, amount, total, side, request.getCryptoSymbol());
+            calcNewBalance(user, amount, total, side, cryptoSymbol);
 
             return new TradeResponse(
                     savedTransaction.getId(),
@@ -74,7 +76,7 @@ public class TradingService {
                     savedTransaction.getCreatedAt()
             );
         } else {
-            throw new Exception("Not enough Money to buy");
+            throw new Exception("Not enough Crypto for buy/sell");
         }
     }
 
@@ -83,6 +85,7 @@ public class TradingService {
                                 BigDecimal total,
                                 Transaction.Side side,
                                 String cryptoSymbol) {
+        log.info("Calculate new balance for user: {}", user);
         Cryptocurrency crypto = cryptocurrencyRepository.findBySymbol(cryptoSymbol);
         Cryptocurrency USDT = cryptocurrencyRepository.findBySymbol(Crypto.USDT.name());
         BigDecimal currentCryptoAmount
@@ -92,8 +95,8 @@ public class TradingService {
         BigDecimal currentUSDTBalance = walletRepository.findByUser(user)
                 .stream().filter(e -> e.getCrypto().getSymbol().equals(Crypto.USDT.name()))
                 .toList().get(0).getBalance();
-        BigDecimal newCryptoAmount = null;
-        BigDecimal newUSDTBalance = null;
+        BigDecimal newCryptoAmount;
+        BigDecimal newUSDTBalance;
         if (side == Transaction.Side.BUY) {
             newCryptoAmount = currentCryptoAmount.add(amount);
             newUSDTBalance = currentUSDTBalance.subtract(total);
@@ -107,12 +110,21 @@ public class TradingService {
 
     private boolean hasEnoughBalance(User user,
                                      BigDecimal exePrice,
-                                     BigDecimal amount) {
-        BigDecimal USDTBalance = walletRepository.findByUser(user)
-                .stream().filter(e -> e.getCrypto().getSymbol().equals(Crypto.USDT.name()))
-                .toList().get(0).getBalance();
-        BigDecimal exeTotal = exePrice.multiply(amount);
-        return USDTBalance.compareTo(exeTotal) == 1;
+                                     BigDecimal amount,
+                                     Transaction.Side side,
+                                     String cryptoSymbol) {
+        if (side == Transaction.Side.BUY) {
+            BigDecimal USDTBalance = walletRepository.findByUser(user)
+                    .stream().filter(e -> e.getCrypto().getSymbol().equals(Crypto.USDT.name()))
+                    .toList().get(0).getBalance();
+            BigDecimal exeTotal = exePrice.multiply(amount);
+            return USDTBalance.compareTo(exeTotal) == 1;
+        } else {
+            BigDecimal cryptoBalance = walletRepository.findByUser(user)
+                    .stream().filter(e -> e.getCrypto().getSymbol().equals(cryptoSymbol))
+                    .toList().get(0).getBalance();
+            return cryptoBalance.compareTo(amount) == 1;
+        }
     }
 
     @Transactional(readOnly = true)
