@@ -2,7 +2,6 @@ package com.aquariux.test.service;
 
 import com.aquariux.test.dto.TradeRequest;
 import com.aquariux.test.dto.TradeResponse;
-import com.aquariux.test.dto.WalletBalanceResponse;
 import com.aquariux.test.entity.*;
 import com.aquariux.test.enums.Crypto;
 import com.aquariux.test.repository.*;
@@ -52,7 +51,6 @@ public class TradingService {
         BigDecimal exePrice = side == Transaction.Side.BUY? snap.getAskPrice(): snap.getBidPrice();
 
         if (hasEnoughBalance(user, exePrice, request.getAmount(), side, cryptoSymbol)) {
-
             Transaction transaction = new Transaction();
             transaction.setUser(user);
             transaction.setTradingPair(pair);
@@ -67,13 +65,13 @@ public class TradingService {
             calcNewBalance(user, amount, total, side, cryptoSymbol);
 
             return new TradeResponse(
-                    savedTransaction.getId(),
-                    savedTransaction.getTradingPair().getSymbol(),
-                    savedTransaction.getSide().name(),
-                    savedTransaction.getAmount(),
-                    savedTransaction.getPrice(),
-                    savedTransaction.getTotal(),
-                    savedTransaction.getCreatedAt()
+                savedTransaction.getId(),
+                savedTransaction.getTradingPair().getSymbol(),
+                savedTransaction.getSide().name(),
+                savedTransaction.getAmount(),
+                savedTransaction.getPrice(),
+                savedTransaction.getTotal(),
+                savedTransaction.getCreatedAt()
             );
         } else {
             throw new Exception("Not enough Crypto for buy/sell");

@@ -2,7 +2,6 @@ package com.aquariux.test.controller;
 
 import com.aquariux.test.dto.TradeRequest;
 import com.aquariux.test.dto.TradeResponse;
-import com.aquariux.test.entity.Transaction;
 import com.aquariux.test.service.TradingService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -13,6 +13,7 @@ import com.aquariux.test.repository.TradingPairRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 import java.math.BigDecimal;
 import java.util.*;
@@ -38,6 +39,7 @@ public class PriceService {
         this.priceSnapshotRepository = priceSnapshotRepository;
     }
 
+    @Transactional
     public void fetchAndStoreBestPrices() {
         try {
             log.info("Starting price fetch and comparison process");
@@ -164,7 +166,6 @@ public class PriceService {
                                                  .orElse(new PriceSnapshot(tradingPairId));
                 if (bestBid != null) {
                     snap.setBidPrice(bestBid.getBidPrice());
-                    priceSnapshotRepository.save(snap);
                     log.info("Stored best bid price for {}: {} from {}",
                             symbol, bestBid.getBidPrice(), bestBid.getSource());
                 }
@@ -182,12 +183,4 @@ public class PriceService {
             log.error("Error storing best price for symbol: {}", symbol, e);
         }
     }
-
-//    private Long getSourceIdByName(String sourceName) {
-//        return priceSourceRepository.findAll().stream()
-//                .filter(source -> source.getName().equalsIgnoreCase(sourceName))
-//                .map(PriceSource::getId)
-//                .findFirst()
-//                .orElse(null);
-//    }
 }
