@@ -25,7 +25,7 @@ CREATE TABLE trading_pairs (
     id IDENTITY PRIMARY KEY,
     base_currency_id BIGINT NOT NULL,     -- BTC
     quote_currency_id BIGINT NOT NULL,    -- USDT
-    symbol VARCHAR(20) NOT NULL UNIQUE,   -- BTC/USDT
+    symbol VARCHAR(20) NOT NULL UNIQUE,   -- BTCUSDT
     FOREIGN KEY (base_currency_id) REFERENCES cryptocurrencies(id),
     FOREIGN KEY (quote_currency_id) REFERENCES cryptocurrencies(id)
 );
