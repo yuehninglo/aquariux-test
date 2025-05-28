@@ -143,26 +143,21 @@ public class PriceService {
             Optional<TradingPair> tradingPair = tradingPairRepository.findBySymbolIgnoreCase(symbol);
             if (tradingPair.isPresent()) {
                 Long tradingPairId = tradingPair.get().getId();
-                // Store best bid price
+                PriceSnapshot snap
+                        = priceSnapshotRepository.findByTradingPairId(tradingPairId)
+                                                 .orElse(new PriceSnapshot(tradingPairId));
                 if (bestBid != null) {
-                    PriceSnapshot bidSnapshot = new PriceSnapshot();
-                    bidSnapshot.setTradingPairId(tradingPairId);
-                    bidSnapshot.setSourceId(getSourceIdByName(bestBid.getSource()));
-                    bidSnapshot.setPrice(bestBid.getBidPrice());
-                    priceSnapshotRepository.save(bidSnapshot);
+                    snap.setBidPrice(bestBid.getBidPrice());
+                    priceSnapshotRepository.save(snap);
                     log.info("Stored best bid price for {}: {} from {}",
                             symbol, bestBid.getBidPrice(), bestBid.getSource());
                 }
-                // Store best ask price
                 if (bestAsk != null) {
-                    PriceSnapshot askSnapshot = new PriceSnapshot();
-                    askSnapshot.setTradingPairId(tradingPairId);
-                    askSnapshot.setSourceId(getSourceIdByName(bestAsk.getSource()));
-                    askSnapshot.setPrice(bestAsk.getAskPrice());
-                    priceSnapshotRepository.save(askSnapshot);
+                    snap.setAskPrice(bestAsk.getAskPrice());
                     log.info("Stored best ask price for {}: {} from {}",
                             symbol, bestAsk.getAskPrice(), bestAsk.getSource());
                 }
+                priceSnapshotRepository.save(snap);
             } else {
                 log.warn("Trading pair not found for symbol: {}", symbol);
             }

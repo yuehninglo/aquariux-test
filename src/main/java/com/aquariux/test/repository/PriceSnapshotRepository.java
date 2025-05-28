@@ -9,7 +9,7 @@ import java.util.Optional;
 @Repository
 public interface PriceSnapshotRepository extends JpaRepository<PriceSnapshot, Long> {
 
-    @Query("SELECT * FROM price_snapshots s WHERE s.trading_pair_id =: tradingPairId" +
-           "ORDER BY captured_at DESC LIMIT 1")
+    @Query("SELECT s FROM PriceSnapshot s WHERE s.tradingPairId = :tradingPairId " +
+           "ORDER BY capturedAt DESC LIMIT 1")
     Optional<PriceSnapshot> findByTradingPairId(Long tradingPairId);
 }

@@ -16,9 +16,9 @@ public class PriceScheduler {
         this.priceService = priceService;
     }
 
-//    @Scheduled(fixedRate = 10000) // 10-second interval
-//    public void scheduledPriceFetch() {
-//        log.info("Starting scheduled price fetch at: {}", LocalDateTime.now());
-//        priceService.fetchAndStoreBestPrices();
-//    }
+    @Scheduled(fixedRate = 10000) // 10-second interval
+    public void scheduledPriceFetch() {
+        log.info("Starting scheduled price fetch at: {}", LocalDateTime.now());
+        priceService.fetchAndStoreBestPrices();
+    }
 }

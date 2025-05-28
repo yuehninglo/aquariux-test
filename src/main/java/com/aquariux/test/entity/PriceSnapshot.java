@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
@@ -21,13 +21,17 @@ public class PriceSnapshot {
     @Column(name = "trading_pair_id", nullable = false)
     private Long tradingPairId;
 
-    @Column(name = "bid_price", nullable = false, precision = 36, scale = 18)
+    @Column(name = "bid_price", precision = 36, scale = 18)
     private BigDecimal bidPrice;
 
-    @Column(name = "ask_price", nullable = false, precision = 36, scale = 18)
+    @Column(name = "ask_price", precision = 36, scale = 18)
     private BigDecimal askPrice;
 
     @Column(name = "captured_at")
-    @CreationTimestamp
+    @UpdateTimestamp
     private LocalDateTime capturedAt;
+
+    public PriceSnapshot(Long tradingPairId) {
+        this.tradingPairId = tradingPairId;
+    }
 }
