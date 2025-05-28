@@ -2,11 +2,13 @@ package com.aquariux.test.controller;
 
 import com.aquariux.test.dto.TradeRequest;
 import com.aquariux.test.dto.TradeResponse;
+import com.aquariux.test.entity.Transaction;
 import com.aquariux.test.service.TradingService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import java.util.List;
 
 @RestController
 @RequestMapping("/trade")
@@ -32,5 +34,11 @@ public class TradeController {
             log.error("Error executing trade: ", e);
             return ResponseEntity.internalServerError().body(null);
         }
+    }
+
+    @GetMapping("{username}")
+    public ResponseEntity<List<TradeResponse>> getUserTransactions(@PathVariable String username) {
+        List<TradeResponse> transactions = tradingService.getUserTransactions(username);
+        return ResponseEntity.ok(transactions);
     }
 }

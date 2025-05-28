@@ -127,8 +127,8 @@ public class TradingService {
         }
     }
 
-    @Transactional(readOnly = true)
-    public List<TradeResponse> getUserTransactions(User user) {
+    public List<TradeResponse> getUserTransactions(String username) {
+        User user = userRepository.findByUsername(username);
         List<Transaction> transactions
                 = transactionRepository.findByUserOrderByCreatedAtDesc(user);
         return transactions.stream().map(t -> new TradeResponse(
@@ -139,16 +139,6 @@ public class TradingService {
                         t.getPrice(),
                         t.getTotal(),
                         t.getCreatedAt()
-                )).collect(Collectors.toList());
-    }
-
-    @Transactional(readOnly = true)
-    public List<WalletBalanceResponse> getUserWalletBalances(User user) {
-        List<Wallet> wallets = walletRepository.findByUser(user);
-        return wallets.stream().map(w -> new WalletBalanceResponse(
-                        w.getCrypto().getSymbol(),
-                        w.getCrypto().getName(),
-                        w.getBalance()
                 )).collect(Collectors.toList());
     }
 }
