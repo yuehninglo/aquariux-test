@@ -11,6 +11,8 @@ import java.math.BigDecimal;
 public class TradeRequest {
 
     private String tradingSymbol;
+    private String cryptoSymbol;
     private String side; // BUY or SELL
     private BigDecimal amount;
+    private BigDecimal executePrice;
 }

@@ -71,6 +71,22 @@ public class PriceService {
         }
     }
 
+    public PriceData getLatestBestPriceBySymbol(String symbol) {
+        TradingPair pair = tradingPairRepository.findBySymbolIgnoreCase(symbol).orElse(null);
+        if (pair != null) {
+            PriceSnapshot snap = priceSnapshotRepository.findByTradingPairId(pair.getId()).orElse(null);
+            if (snap != null) {
+                return new PriceData(symbol, snap.getBidPrice(), snap.getAskPrice(), null);
+            } else {
+                log.error("Cannot find price snapshot for symbol: {}", symbol);
+                return null;
+            }
+        } else {
+            log.error("Cannot find symbol: {}", symbol);
+            return null;
+        }
+    }
+
     private List<PriceData> fetchPricesFromSource(PriceSource source) {
         List<PriceData> prices = new ArrayList<>();
         try {
@@ -167,11 +183,11 @@ public class PriceService {
         }
     }
 
-    private Long getSourceIdByName(String sourceName) {
-        return priceSourceRepository.findAll().stream()
-                .filter(source -> source.getName().equalsIgnoreCase(sourceName))
-                .map(PriceSource::getId)
-                .findFirst()
-                .orElse(null);
-    }
+//    private Long getSourceIdByName(String sourceName) {
+//        return priceSourceRepository.findAll().stream()
+//                .filter(source -> source.getName().equalsIgnoreCase(sourceName))
+//                .map(PriceSource::getId)
+//                .findFirst()
+//                .orElse(null);
+//    }
 }
