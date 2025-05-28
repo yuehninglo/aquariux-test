@@ -10,8 +10,6 @@ import java.util.List;
 @Repository
 public interface TransactionRepository extends JpaRepository<Transaction, Long> {
 
-    @Query("SELECT t FROM Transaction t JOIN FETCH t.tradingPair tp " +
-           "JOIN FETCH tp.baseCurrencyId JOIN FETCH tp.quoteCurrencyId " +
-           "WHERE t.user = :user ORDER BY t.createdAt DESC")
+    @Query("SELECT t FROM Transaction t WHERE t.user = :user ORDER BY t.createdAt DESC")
     List<Transaction> findByUserOrderByCreatedAtDesc(User user);
 }
