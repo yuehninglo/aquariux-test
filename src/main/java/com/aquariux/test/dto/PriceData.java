@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 public class PriceData {
     private String symbol;
-    private BigDecimal bidPrice;  // For SELL orders
-    private BigDecimal askPrice;  // For BUY orders
+    private BigDecimal bidPrice;  // For the SELL orders
+    private BigDecimal askPrice;  // For the BUY orders
     private String source;
 }
